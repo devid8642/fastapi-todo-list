@@ -53,7 +53,7 @@ Nesse caso envie todas as alterações para o GH:
 git push origin <nome_da_branch>:<nome_da_branch>
 ```
 
-Após isso, crie um pull request propondo as alterações. O pull request será revisado e então será mergeado na master ou fechado (alterações descartadas). Na criação da pull request atente-se para informar uma descrição clara do trabalho realizado e finalize a descrição com Close #X, em que X indica a qual issue o trabalho realizado no pull request se refere.
+Após isso, crie um pull request propondo as alterações. O pull request será revisado e então será mergeado na master ou fechado (alterações descartadas). Na criação da pull request atente-se para informar uma descrição clara do trabalho realizado e finalize a descrição com Close #X, em que X indica o número da issue a qual o trabalho realizado no pull request se refere.
 
 O segredo para minimizar os conflitos é o seguinte:
 
