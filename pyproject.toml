@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "projetoy"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.105.0"
+uvicorn = "^0.24.0.post1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+taskipy = "^1.12.2"
+httpx = "^0.25.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "backend/"
+
+[tool.taskipy.tasks]
+run = 'uvicorn backend.app:app --reload'
+test = 'pytest -s -x --cov=backend -vv'
+post_test = 'coverage html'
