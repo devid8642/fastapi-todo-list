@@ -4,5 +4,5 @@ app = FastAPI()
 
 
 @app.get('/')
-def read_root():
+async def home():
     return {'message': 'Olá Mundo!'}

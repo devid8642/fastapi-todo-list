@@ -16,6 +16,9 @@ pytest = "^7.4.3"
 pytest-cov = "^4.1.0"
 taskipy = "^1.12.2"
 httpx = "^0.25.2"
+blue = "^0.9.1"
+ruff = "^0.1.8"
+isort = "^5.13.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -24,7 +27,22 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 pythonpath = "backend/"
 
+[tool.ruff]
+line-length = 79
+exclude = ['.venv', 'migrations']
+
+[tool.isort]
+profile = "black"
+line_length = 79
+extend_skip = ['migrations']
+
+[tool.blue]
+extend-exclude = '(migrations/)'
+
 [tool.taskipy.tasks]
+lint = 'ruff . && blue --check . --diff'
+format = 'blue .  && isort .'
 run = 'uvicorn backend.app:app --reload'
+pre_test = 'task lint'
 test = 'pytest -s -x --cov=backend -vv'
 post_test = 'coverage html'
