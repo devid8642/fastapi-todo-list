@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 
 from .schemas import User, UserDB, UserList, UserPublic
 
-app = FastAPI()
+app = FastAPI(title='My Study App')
 database = []
 
 
@@ -30,3 +30,14 @@ async def get_user(user_id: int):
     if user_id > len(database) or user_id < 0:
         raise HTTPException(status_code=404, detail='User not found')
     return database[user_id - 1]
+
+
+@app.put('/users/{user_id}/update/', response_model=UserPublic)
+async def update_user(user_id: int, user: User):
+    if user_id > len(database) or user_id < 0:
+        raise HTTPException(status_code=404, detail='User not found')
+
+    user = UserDB(**user.model_dump(), id=user_id)
+    database[user_id - 1] = user
+
+    return user

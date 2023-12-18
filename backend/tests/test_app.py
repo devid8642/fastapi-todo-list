@@ -46,3 +46,32 @@ def test_read_user(client):
     assert fail_response.json() == {
         'detail': 'User not found',
     }
+
+
+def test_update_user(client):
+    success_response = client.put(
+        '/users/1/update/',
+        json={
+            'username': 'alice',
+            'email': 'alice@example.com',
+            'password': 'secret',
+        },
+    )
+    fail_response = client.put(
+        '/users/2/update/',
+        json={
+            'username': 'alice',
+            'email': 'alice@example.com',
+            'password': 'secret',
+        },
+    )
+
+    assert success_response.status_code == 200
+    assert success_response.json() == {
+        'id': 1,
+        'username': 'alice',
+        'email': 'alice@example.com',
+    }
+
+    assert fail_response.status_code == 404
+    assert fail_response.json() == {'detail': 'User not found'}
