@@ -23,3 +23,8 @@ async def create_user(user: User):
 @app.get('/users/', response_model=UserList)
 async def get_users():
     return {'users': database}
+
+
+@app.get('/users/{user_id}', response_model=UserPublic)
+async def get_user(user_id: int):
+    return database[user_id - 1]
