@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from .schemas import User, UserDB, UserList, UserPublic
 
@@ -27,4 +27,6 @@ async def get_users():
 
 @app.get('/users/{user_id}', response_model=UserPublic)
 async def get_user(user_id: int):
+    if user_id > len(database) or user_id < 0:
+        raise HTTPException(status_code=404, detail='User not found')
     return database[user_id - 1]

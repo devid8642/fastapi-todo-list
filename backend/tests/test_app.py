@@ -33,11 +33,16 @@ def test_read_users(client):
 
 
 def test_read_user(client):
-    response = client.get('/users/1/')
+    success_response = client.get('/users/1/')
+    fail_response = client.get('/users/2/')
 
-    assert response.status_code == 200
-    assert response.json() == {
+    assert success_response.status_code == 200
+    assert success_response.json() == {
         'id': 1,
         'username': 'devid',
         'email': 'devid@example.com',
+    }
+    assert fail_response.status_code == 404
+    assert fail_response.json() == {
+        'detail': 'User not found',
     }
