@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .models import User, UserDB, UserPublic
+from .schemas import User, UserDB, UserList, UserPublic
 
 app = FastAPI()
 database = []
@@ -18,3 +18,8 @@ async def create_user(user: User):
     database.append(user)
 
     return user
+
+
+@app.get('/users/', response_model=UserList)
+async def get_users():
+    return {'users': database}
