@@ -75,3 +75,18 @@ def test_update_user(client):
 
     assert fail_response.status_code == 404
     assert fail_response.json() == {'detail': 'User not found'}
+
+
+def test_delete_user(client):
+    success_response = client.delete('/users/1/delete/')
+    fail_response = client.delete('/users/1/delete/')
+
+    assert success_response.status_code == 200
+    assert success_response.json() == {
+        'detail': 'User deleted',
+    }
+
+    assert fail_response.status_code == 404
+    assert fail_response.json() == {
+        'detail': 'User not found',
+    }

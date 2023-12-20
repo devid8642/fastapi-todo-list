@@ -19,3 +19,7 @@ class UserDB(User):
 
 class UserList(BaseModel):
     users: list[UserPublic]
+
+
+class Message(BaseModel):
+    detail: str
