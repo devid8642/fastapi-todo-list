@@ -16,9 +16,7 @@ async def home():
 
 
 @app.post('/users/create/', status_code=201, response_model=UserPublic)
-async def create_user(
-    new_user: UserSchema, session: Session = Depends(get_session)
-):
+def create_user(new_user: UserSchema, session: Session = Depends(get_session)):
     db_user = session.scalar(select(User).where(User.email == new_user.email))
 
     if db_user:
@@ -38,15 +36,21 @@ async def create_user(
 
 
 @app.get('/users/', response_model=UserList)
-async def get_users():
-    return {'users': database}
+def read_users(
+    session: Session = Depends(get_session), offset: int = 0, limit: int = 100
+):
+    users = session.scalars(select(User).offset(offset).limit(limit)).all()
+    return {'users': users}
 
 
 @app.get('/users/{user_id}/', response_model=UserPublic)
-async def get_user(user_id: int):
-    if user_id > len(database) or user_id < 1:
+async def read_user(user_id: int, session: Session = Depends(get_session)):
+    user = session.scalar(select(User).where(User.id == user_id))
+
+    if not user:
         raise HTTPException(status_code=404, detail='User not found')
-    return database[user_id - 1]
+
+    return user
 
 
 @app.put('/users/{user_id}/update/', response_model=UserPublic)

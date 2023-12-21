@@ -27,12 +27,18 @@ def test_read_users(client):
     response = client.get('/users/')
 
     assert response.status_code == 200
-    assert response.json() == {
-        'users': [{'id': 1, 'username': 'devid', 'email': 'devid@example.com'}]
-    }
+    assert response.json() == {'users': []}
 
 
 def test_read_user(client):
+    client.post(
+        '/users/create/',
+        json={
+            'username': 'devid',
+            'email': 'devid@example.com',
+            'password': 'secret',
+        },
+    )
     success_response = client.get('/users/1/')
     fail_response = client.get('/users/2/')
 
