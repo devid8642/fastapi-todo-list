@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from backend.app import app
 from backend.database import get_session
-from backend.models import Base
+from backend.models import Base, User
 
 
 @pytest.fixture
@@ -35,3 +35,16 @@ def client(session):
         yield client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def user(session):
+    new_user = User(
+        username='devid', email='devid@example.com', password='secret'
+    )
+
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
+
+    return new_user
