@@ -35,19 +35,22 @@ def test_read_users(client, user):
 
 
 def test_read_user(client, user):
-    user_schema = UserPublic.model_validate(user).model_dump()
     success_response = client.get('/users/1/')
     fail_response = client.get('/users/2/')
 
     assert success_response.status_code == 200
-    assert success_response.json() == {user_schema}  # type: ignore
+    assert success_response.json() == {
+        'id': 1,
+        'username': 'devid',
+        'email': 'devid@example.com',
+    }
     assert fail_response.status_code == 404
     assert fail_response.json() == {
         'detail': 'User not found',
     }
 
 
-def test_update_user(client):
+def test_update_user(client, user):
     success_response = client.put(
         '/users/1/update/',
         json={
