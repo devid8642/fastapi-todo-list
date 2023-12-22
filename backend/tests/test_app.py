@@ -79,7 +79,7 @@ def test_update_user(client, user):
     assert fail_response.json() == {'detail': 'User not found'}
 
 
-def test_delete_user(client):
+def test_delete_user(client, user):
     success_response = client.delete('/users/1/delete/')
     fail_response = client.delete('/users/1/delete/')
 

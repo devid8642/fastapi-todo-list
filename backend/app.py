@@ -7,7 +7,6 @@ from .models import User
 from .schemas import Message, UserList, UserPublic, UserSchema
 
 app = FastAPI(title='My Study App')
-database = []
 
 
 @app.get('/')
@@ -73,10 +72,13 @@ async def update_user(
 
 
 @app.delete('/users/{user_id}/delete/', response_model=Message)
-async def delete_user(user_id: int):
-    if user_id > len(database) or user_id < 1:
+async def delete_user(user_id: int, session: Session = Depends(get_session)):
+    db_user = session.scalar(select(User).where(User.id == user_id))
+
+    if not db_user:
         raise HTTPException(status_code=404, detail='User not found')
 
-    del database[user_id - 1]
+    session.delete(db_user)
+    session.commit()
 
     return {'detail': 'User deleted'}
