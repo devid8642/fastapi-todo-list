@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from backend.app import app
 from backend.database import get_session
 from backend.models import Base, User
+from backend.security import get_password_hash
 
 
 @pytest.fixture
@@ -39,12 +40,17 @@ def client(session):
 
 @pytest.fixture
 def user(session):
+    password = 'secret'
     new_user = User(
-        username='devid', email='devid@example.com', password='secret'
+        username='devid',
+        email='devid@example.com',
+        password=get_password_hash(password),
     )
 
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
+
+    new_user.plain_password = password  # type: ignore
 
     return new_user

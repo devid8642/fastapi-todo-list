@@ -20,3 +20,8 @@ class UserList(BaseModel):
 
 class Message(BaseModel):
     detail: str
+
+
+class Token(BaseModel):
+    acess_token: str
+    token_type: str
