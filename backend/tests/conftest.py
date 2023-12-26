@@ -54,3 +54,16 @@ def user(session):
     new_user.plain_password = password  # type: ignore
 
     return new_user
+
+
+@pytest.fixture
+def token(client, user):
+    response = client.post(
+        '/token/',
+        data={
+            'username': user.email,
+            'password': user.plain_password,
+        },
+    )
+
+    return response.json()['access_token']

@@ -63,47 +63,67 @@ def test_read_user(client, user):
     }
 
 
-def test_update_user(client, user):
-    success_response = client.put(
+def test_update_user(client, user, token):
+    response = client.put(
         '/users/1/update/',
         json={
             'username': 'alice',
             'email': 'alice@example.com',
             'password': 'secret',
         },
+        headers={
+            'Authorization': f'Bearer {token}',
+        },
     )
-    fail_response = client.put(
+
+    assert response.status_code == 200
+    assert response.json() == {
+        'id': 1,
+        'username': 'alice',
+        'email': 'alice@example.com',
+    }
+
+
+def test_update_a_different_user(client, user, token):
+    response = client.put(
         '/users/2/update/',
         json={
             'username': 'alice',
             'email': 'alice@example.com',
             'password': 'secret',
         },
+        headers={
+            'Authorization': f'Bearer {token}',
+        },
     )
 
-    assert success_response.status_code == 200
-    assert success_response.json() == {
-        'id': 1,
-        'username': 'alice',
-        'email': 'alice@example.com',
+    assert response.status_code == 400
+    assert response.json() == {
+        'detail': 'Not enough permissions',
     }
 
-    assert fail_response.status_code == 404
-    assert fail_response.json() == {'detail': 'User not found'}
 
+def test_delete_user(client, user, token):
+    response = client.delete(
+        '/users/1/delete/',
+        headers={'Authorization': f'Bearer {token}'},
+    )
 
-def test_delete_user(client, user):
-    success_response = client.delete('/users/1/delete/')
-    fail_response = client.delete('/users/1/delete/')
-
-    assert success_response.status_code == 200
-    assert success_response.json() == {
+    assert response.status_code == 200
+    assert response.json() == {
         'detail': 'User deleted',
     }
 
-    assert fail_response.status_code == 404
-    assert fail_response.json() == {
-        'detail': 'User not found',
+
+def test_delete_a_different_user(client, user, token):
+    response = client.delete(
+        '/users/2/delete/',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+
+    assert response.status_code == 400
+    assert response.json() == {
+        'detail': 'Not enough permissions',
     }
 
 
@@ -125,7 +145,7 @@ def test_get_token(client, user):
     token = success_response.json()
 
     assert success_response.status_code == 200
-    assert 'acess_token' in token
+    assert 'access_token' in token
     assert 'token_type' in token
 
     assert fail_response.status_code == 400

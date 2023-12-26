@@ -8,6 +8,7 @@ from backend.models import User
 from backend.schemas import Message, Token, UserList, UserPublic, UserSchema
 from backend.security import (
     create_access_token,
+    get_current_user,
     get_password_hash,
     verify_password,
 )
@@ -60,8 +61,14 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
 
 @app.put('/users/{user_id}/update/', response_model=UserPublic)
 def update_user(
-    user_id: int, user: UserSchema, session: Session = Depends(get_session)
+    user_id: int,
+    user: UserSchema,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
+    if current_user.id != user_id:
+        raise HTTPException(status_code=400, detail='Not enough permissions')
+
     db_user = session.scalar(select(User).where(User.id == user_id))
 
     if not db_user:
@@ -78,7 +85,14 @@ def update_user(
 
 
 @app.delete('/users/{user_id}/delete/', response_model=Message)
-def delete_user(user_id: int, session: Session = Depends(get_session)):
+def delete_user(
+    user_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.id != user_id:
+        raise HTTPException(status_code=400, detail='Not enough permissions')
+
     db_user = session.scalar(select(User).where(User.id == user_id))
 
     if not db_user:
@@ -102,6 +116,6 @@ def login_for_acess_token(
             status_code=400, detail='Incorrect email or password'
         )
 
-    acess_token = create_access_token(data={'user_email': user.email})
+    access_token = create_access_token(data={'sub': user.email})
 
-    return {'acess_token': acess_token, 'token_type': 'bearer'}
+    return {'access_token': access_token, 'token_type': 'bearer'}
