@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import auth, users
+from backend.routers import auth, users
 
 app = FastAPI(title='My Study App')
 app.include_router(users.router)
