@@ -26,6 +26,8 @@ httpx = "^0.25.2"
 blue = "^0.9.1"
 ruff = "^0.1.8"
 isort = "^5.13.2"
+factory-boy = "^3.3.0"
+freezegun = "^1.4.0"
 
 [build-system]
 requires = ["poetry-core"]

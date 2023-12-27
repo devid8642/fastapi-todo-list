@@ -8,10 +8,15 @@ from sqlalchemy.orm import Session
 from backend.database import get_session
 from backend.models import User
 from backend.schemas import Token
-from backend.security import create_access_token, verify_password
+from backend.security import (
+    create_access_token,
+    get_current_user,
+    verify_password,
+)
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 Session = Annotated[Session, Depends(get_session)]
+CurrentUser = Annotated[User, Depends(get_current_user)]
 OAuth2Form = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
@@ -30,3 +35,10 @@ def login_for_acess_token(
     access_token = create_access_token(data={'sub': user.email})
 
     return {'access_token': access_token, 'token_type': 'bearer'}
+
+
+@router.post('/refresh_token', response_model=Token)
+def refresh_token(user: CurrentUser):
+    new_access_token = create_access_token({'sub': user.email})
+
+    return {'access_token': new_access_token, 'token_type': 'bearer'}

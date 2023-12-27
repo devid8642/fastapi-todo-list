@@ -42,13 +42,13 @@ def test_read_users(client, user):
 
 def test_read_user(client, user):
     success_response = client.get(f'/users/{user.id}/')
-    fail_response = client.get('/users/2/')
+    fail_response = client.get(f'/users/{user.id + 1}/')
 
     assert success_response.status_code == 200
     assert success_response.json() == {
-        'id': 1,
-        'username': 'devid',
-        'email': 'devid@example.com',
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
     }
     assert fail_response.status_code == 404
     assert fail_response.json() == {
@@ -71,15 +71,15 @@ def test_update_user(client, user, token):
 
     assert response.status_code == 200
     assert response.json() == {
-        'id': 1,
+        'id': user.id,
         'username': 'alice',
         'email': 'alice@example.com',
     }
 
 
-def test_update_a_different_user(client, token):
+def test_update_a_different_user(client, token, other_user):
     response = client.put(
-        '/users/2/update/',
+        f'/users/{other_user.id}/update/',
         json={
             'username': 'alice',
             'email': 'alice@example.com',
@@ -108,9 +108,9 @@ def test_delete_user(client, user, token):
     }
 
 
-def test_delete_a_different_user(client, token):
+def test_delete_a_different_user(client, token, other_user):
     response = client.delete(
-        '/users/2/delete/',
+        f'/users/{other_user.id}/delete/',
         headers={'Authorization': f'Bearer {token}'},
     )
 
