@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict, EmailStr
 
+from backend.models import TodoState
+
 
 class UserSchema(BaseModel):
     username: str
@@ -29,3 +31,26 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: str | None = None
+
+
+class TaskSchema(BaseModel):
+    title: str
+    description: str
+    state: TodoState
+
+
+class TaskPublic(BaseModel):
+    id: int
+    title: str
+    description: str
+    state: TodoState
+
+
+class TaskList(BaseModel):
+    tasks: list[TaskPublic]
+
+
+class TaskUpdate(BaseModel):
+    title: str | None = None
+    description: str | None = None
+    state: TodoState | None = None
