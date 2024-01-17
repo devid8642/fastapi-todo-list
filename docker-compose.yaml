@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  backend_projeto_y_database:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: app_user
+      POSTGRES_DB: app_db
+      POSTGRES_PASSWORD: app_password
+    ports:
+      - "5432:5432"
+
+  backend_projeto_y:
+    image: backend_projeto_y
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend_projeto_y_database
+    environment:
+      DATABASE_URL: postgresql+psycopg://app_user:app_password@backend_projeto_y_database:5432/app_db
+
+volumes:
+  pgdata:
