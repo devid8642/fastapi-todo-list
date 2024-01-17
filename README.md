@@ -1,5 +1,4 @@
-# Projeto Y
-Sistem de gerenciamento de estoque.
+# Todoist
 
 ## Setup Backend
 O backed é desenvolvido usando python 3.11+. Recomenda-se o uso da ferramenta poetry para fazer o gerenciamento das depedências do projeto. Instalando as dependências:
